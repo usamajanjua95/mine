@@ -1,0 +1,64 @@
+using imge.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace imge.Controllers
+{
+    public class HomeController : Controller
+    {
+        projEntities1 po = new projEntities1();
+        public ActionResult Index()
+        {
+            var data = po.Product.ToList();
+            return View();
+        }
+
+       public ActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Create(Product p)
+        {
+            
+            
+                string fileName = Path.GetFileNameWithoutExtension(p.ImageFile.FileName);
+                string extension = Path.GetExtension(p.ImageFile.FileName);
+                fileName = fileName + extension;
+                p.P_image = "~/images/" + fileName;
+                  fileName = Path.Combine(Server.MapPath("~/images/"), fileName);
+                p.ImageFile.SaveAs("fileName");
+                po.Product.Add(p);
+                int a = po.SaveChanges();
+                if (a > 0)
+                {
+                    ViewBag.Message = "<script> alert('Recored')</script>";
+                    ModelState.Clear();
+                }
+                else
+                {
+                    ViewBag.Message = "<script>alert('not inserted')</script>";
+                }
+                return ViewBag("asd");
+            }
+
+      
+        public ActionResult About()
+        {
+            ViewBag.Message = "Your application description page.";
+
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+    }
+}
